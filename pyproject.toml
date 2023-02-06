@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "my-bots"
+version = "0.1.0"
+description = ""
+authors = ["ilia <iliaman1993@gmail.com>"]
+readme = "README.md"
+packages = [{include = "my_bots"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = ">=3.0.0b6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
