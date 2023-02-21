@@ -35,7 +35,8 @@ async def main():
     register_all_handlers(dp)
 
     try:
-        await dp.start_polling()
+        await bot.delete_webhook(drop_pending_updates=True)
+        await dp.start_polling(bot)
     finally:
         await bot.close()
 
