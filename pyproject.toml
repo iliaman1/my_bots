@@ -10,6 +10,7 @@ packages = [{include = "my_bots"}]
 python = "^3.11"
 aiogram = ">=3.0.0b6"
 requests = "^2.28.2"
+environs = "^9.5.0"
 
 
 [build-system]
