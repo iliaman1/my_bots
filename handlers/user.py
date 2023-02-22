@@ -10,6 +10,7 @@ from keyboards.bookmarks_kb import (
     create_edit_keyboard
 )
 from keyboards.pagination_kb import create_pagination_keyboard
+from filters.filters import IsDigitCallbackData, IsDelBookmarkCallbackData
 
 from lexicon.ru import LEXICON
 from lexicon.ru import LEXICON_RU
@@ -44,7 +45,7 @@ async def process_beginning_command(message: Message):
             'backward',
             f'{users_db[message.from_user.id]["page"]}/{len(book)}',
             'forward'
-        ).as_markup(resize_keyboard=True)
+        )
     )
 
 
@@ -59,7 +60,7 @@ async def process_continue_command(message: Message):
             'backward',
             f'{users_db[message.from_user.id]["page"]}/{len(book)}',
             'forward'
-        ).as_markup(resize_keyboard=True)
+        )
     )
 
 
@@ -72,7 +73,7 @@ async def process_bookmarks_command(message: Message):
             text=LEXICON[message.text],
             reply_markup=create_bookmarks_keyboard(
                 *users_db[message.from_user.id]["bookmarks"]
-            ).as_markup(resize_keyboard=True)
+            )
         )
     else:
         await message.answer(text=LEXICON['no_bookmarks'])
@@ -90,7 +91,7 @@ async def process_forward_press(callback: CallbackQuery):
                 'backward',
                 f'{users_db[callback.from_user.id]["page"]}/{len(book)}',
                 'forward'
-            ).as_markup(resize_keyboard=True)
+            )
         )
     await callback.answer()
 
@@ -107,7 +108,7 @@ async def process_backward_press(callback: CallbackQuery):
                 'backward',
                 f'{users_db[callback.from_user.id]["page"]}/{len(book)}',
                 'forward'
-            ).as_markup(resize_keyboard=True)
+            )
         )
     await callback.answer()
 
@@ -132,7 +133,7 @@ async def process_bookmark_press(callback: CallbackQuery):
             'backward',
             f'{users_db[callback.from_user.id]["page"]}/{len(book)}',
             'forward'
-        ).as_markup(resize_keyboard=True)
+        )
     )
     await callback.answer()
 
@@ -144,7 +145,7 @@ async def process_edit_press(callback: CallbackQuery):
         text=LEXICON[callback.data],
         reply_markup=create_edit_keyboard(
             *users_db[callback.from_user.id]["bookmarks"]
-        ).as_markup(resize_keyboard=True)
+        )
     )
     await callback.answer()
 
@@ -165,8 +166,7 @@ async def process_del_bookmark_press(callback: CallbackQuery):
     if users_db[callback.from_user.id]['bookmarks']:
         await callback.message.edit_text(
             text=LEXICON['/bookmarks'],
-            reply_markup=create_edit_keyboard(*users_db[callback.from_user.id]["bookmarks"]).as_markup(
-                resize_keyboard=True)
+            reply_markup=create_edit_keyboard(*users_db[callback.from_user.id]["bookmarks"])
         )
     else:
         await callback.message.edit_text(text=LEXICON['no_bookmarks'])
@@ -198,13 +198,13 @@ def register_user_handlers(dp: Dispatcher):
     )
     dp.callback_query.register(
         process_bookmark_press,
-        lambda x: x.data.isdigit()
+        IsDigitCallbackData()
     )
     dp.callback_query.register(process_edit_press, Text(text="edit_bookmarks"))
     dp.callback_query.register(process_cancel_press, Text(text="cancel"))
     dp.callback_query.register(
         process_del_bookmark_press,
-        lambda x: 'del' in x.data and x.data[:-3].isdigit()
+        IsDelBookmarkCallbackData()
     )
 
 
