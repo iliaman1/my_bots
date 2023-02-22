@@ -27,18 +27,15 @@ async def main():
 
     config: Config = load_config('config_data/.env')
 
-    bot: Bot = Bot(token=config.tg_bot.token)
+    bot: Bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     dp: Dispatcher = Dispatcher()
 
     await set_main_menu(bot)
 
     register_all_handlers(dp)
 
-    try:
-        await bot.delete_webhook(drop_pending_updates=True)
-        await dp.start_polling(bot)
-    finally:
-        await bot.close()
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
