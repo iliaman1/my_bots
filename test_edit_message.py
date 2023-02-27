@@ -47,13 +47,13 @@ async def main():
         # await callback.message.answer(text=text, reply_markup=klava) отправляем новое сообщение
         # await callback.message.delete() удаляем сообщение
         # Редактируем в чате сообщение с шуткой
-        try:
-            await callback.message.edit_text(
-                text=JOKES[random_joke()],
-                reply_markup=markup.as_markup()
-            )
-        except:
-            await callback.answer()
+        text = JOKES[random_joke()]
+        while text == callback.message.text:
+            text = JOKES[random_joke()]
+        await callback.message.edit_text(
+            text=text,
+            reply_markup=markup.as_markup()
+        )
 
     # Этот хэндлер будет срабатывать на любые сообщения, кроме команд
     async def send_echo(message: Message):
