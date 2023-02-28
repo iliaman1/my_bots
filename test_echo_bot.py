@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message, ContentType
 from config_data.config import load_config
+from pprint import pprint
 
 config = load_config('config_data/.env')
 
@@ -30,17 +31,19 @@ async def send_echo(message: Message):
 
 # Этот хэндлер будет срабатывать на отправку боту фото
 async def send_photo_echo(message: Message):
-    print(message)
+    print(message.photo[0].file_id)
     await message.reply_photo(message.photo[0].file_id)
 
 
 # Этот хэндлер будет срабатывать на отправку боту Аудио
 async def send_audio_echo(message: Message):
+    print(message.audio.file_id)
     await message.reply_audio(message.audio.file_id)
 
 
 # Этот хэндлер будет срабатывать на отправку боту Видео
 async def send_video_echo(message: Message):
+    print(message.video.file_id)
     await message.reply_video(message.video.file_id)
 
 
@@ -51,16 +54,19 @@ async def send_sticker_echo(message: Message):
 
 # Этот хэндлер будет срабатывать на отправку боту Документа
 async def send_document_echo(message: Message):
+    print(message.document.file_id)
     await message.reply_document(message.document.file_id)
 
 
 # Этот хэндлер будет срабатывать на отправку боту Voice message
 async def send_voice_echo(message: Message):
+    print(message.voice.file_id)
     await message.reply_voice(message.voice.file_id)
 
 
 # Этот хэндлер будет срабатывать на отправку боту анимации
 async def send_animation_echo(message: Message):
+    print(message.animation.file_id)
     await message.reply_animation(message.animation.file_id)
 
 

@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import random
+import requests
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import CallbackQuery, InlineKeyboardButton, Message
@@ -33,16 +34,18 @@ async def main():
     # Этот хэндлер будет срабатывать на команды "/start" и "/joke"
     async def process_start_command(message: Message):
         markup: InlineKeyboardBuilder = InlineKeyboardBuilder()
-        markup.add(InlineKeyboardButton(text='Хочу еще!', callback_data='more'))
+        markup.add(InlineKeyboardButton(text='Анекдот!', callback_data='joke'))
+        markup.add(InlineKeyboardButton(text='Котик!', callback_data='cat'))
         await message.answer(
             text=JOKES[random_joke()],
             reply_markup=markup.as_markup()
         )
 
-    # Этот хэндлер будет срабатывать на нажатие кнопки "Хочу еще!"
-    async def process_more_press(callback: CallbackQuery):
+    # Этот хэндлер будет срабатывать на нажатие кнопки "Анекдот!"
+    async def process_joke_press(callback: CallbackQuery):
         markup: InlineKeyboardBuilder = InlineKeyboardBuilder()
-        markup.add(InlineKeyboardButton(text='Хочу еще!', callback_data='more'))
+        markup.add(InlineKeyboardButton(text='Анекдот!', callback_data='joke'))
+        markup.add(InlineKeyboardButton(text='Котик!', callback_data='cat'))
         # await callback.answer() отвечаем на колбек
         # await callback.message.answer(text=text, reply_markup=klava) отправляем новое сообщение
         # await callback.message.delete() удаляем сообщение
@@ -55,6 +58,14 @@ async def main():
             reply_markup=markup.as_markup()
         )
 
+    # Этот хэндлер будет срабатывать на нажатие кнопки "Анекдот!"
+    async def process_cat_press(callback: CallbackQuery):
+        markup: InlineKeyboardBuilder = InlineKeyboardBuilder()
+        markup.add(InlineKeyboardButton(text='Анекдот!', callback_data='joke'))
+        markup.add(InlineKeyboardButton(text='Котик!', callback_data='cat'))
+
+        cat_photo_link = requests.get('https://aws.random.cat/meow').json()['file']
+
     # Этот хэндлер будет срабатывать на любые сообщения, кроме команд
     async def send_echo(message: Message):
         await message.answer(
@@ -64,8 +75,10 @@ async def main():
                  'отправь команду /joke')
 
     dp.message.register(process_start_command, Command(commands=['start', 'joke']))
+    dp.callback_query.register(process_joke_press, Text(text='joke'))
+    dp.callback_query.register(process_cat_press, Text(text='cat'))
     dp.message.register(send_echo)
-    dp.callback_query.register(process_more_press, Text(text='more'))
+
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
